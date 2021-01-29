@@ -1,11 +1,8 @@
 package br.com.itau.compose2048.ui
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.RowScope.weight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
@@ -30,35 +27,37 @@ fun Board2048() {
     val game = remember { Game2048() }
     val boardState = remember { mutableStateOf(game.board) }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        padding = 16.dp
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
     ) {
 
-        TopStatsPanel()
+        //TopStatsPanel()
 
-        Spacer(modifier = Modifier.padding(top = 70.dp))
+        //Spacer(modifier = Modifier.padding(top = 10.dp))
 
         Board(boardState.value)
 
-        ActionButton("Left") {
-            game.shift(Direction.LEFT)
-            boardState.value = game.board.copyOf()
+        Row {
+            ActionButton("Left") {
+                game.shift(Direction.LEFT)
+                boardState.value = game.board.copyOf()
+            }
+            ActionButton("Right") {
+                game.shift(Direction.RIGHT)
+                boardState.value = game.board.copyOf()
+            }
         }
-        ActionButton("Right") {
-            game.shift(Direction.RIGHT)
-            boardState.value = game.board.copyOf()
-        }
-        ActionButton("Top") {
-            game.shift(Direction.TOP)
-            boardState.value = game.board.copyOf()
-        }
-        ActionButton("Bottom") {
-            game.shift(Direction.BOTTOM)
-            boardState.value = game.board.copyOf()
+        Row {
+            ActionButton("Top") {
+                game.shift(Direction.TOP)
+                boardState.value = game.board.copyOf()
+            }
+            ActionButton("Bottom") {
+                game.shift(Direction.BOTTOM)
+                boardState.value = game.board.copyOf()
+            }
         }
     }
-
 }
 
 @Composable
@@ -71,9 +70,9 @@ fun Board(board: Array<IntArray>) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         repeat(Game2048.BOARD_SIZE) { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier) {
                 repeat(Game2048.BOARD_SIZE) { col ->
-                    Cell(board[row][col])
+                    Cell(board[row][col], modifier = Modifier.weight(1.0f))
                 }
             }
         }
@@ -81,13 +80,10 @@ fun Board(board: Array<IntArray>) {
 }
 
 @Composable
-fun Cell(num: Int) {
+fun Cell(num: Int, modifier: Modifier) {
     Box(
-        backgroundColor = ProjectColors.piece,
-        modifier = Modifier.weight(1f)
-            .aspectRatio(1f),
-        shape = RoundedCornerShape(4.dp),
-        gravity = ContentGravity.Center
+        modifier = modifier.background(ProjectColors.piece).aspectRatio(1.0f),
+        contentAlignment = Alignment.Center
     ) {
         if (num > 0) {
             Text(
